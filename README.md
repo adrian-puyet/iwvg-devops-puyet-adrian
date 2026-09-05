@@ -10,7 +10,7 @@
 ![GitHub closed issues](https://img.shields.io/github/issues-closed/adrian-puyet/iwvg-devops-puyet-adrian?color=informational)
 
 ### Estado del código
-
+[![DevOps](https://github.com/adrian-puyet/iwvg-devops-puyet-adrian/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/adrian-puyet/iwvg-devops-puyet-adrian/actions/workflows/continuous-integration.yml)
 [![Render broken](https://iwvg-devops-latest.onrender.com/version-badge)](https://iwvg-devops-latest.onrender.com/swagger-ui.html)
 
 
