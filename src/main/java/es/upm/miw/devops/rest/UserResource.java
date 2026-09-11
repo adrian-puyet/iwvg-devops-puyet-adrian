@@ -5,6 +5,7 @@ import es.upm.miw.devops.rest.dto.ActiveStatusRequest;
 import es.upm.miw.devops.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -20,6 +21,13 @@ public class UserResource {
     public ResponseEntity<User> getUser(@PathVariable String id) {
         return ResponseEntity.ok(userService.getUserById(id));
     }
+
+    @GetMapping
+    public ResponseEntity<List<User>> getUsers(
+            @RequestParam(required = false) Boolean billable) {
+        return ResponseEntity.ok(userService.getUsers(billable));
+    }
+
 
     @PutMapping("/{id}/active")
     public ResponseEntity<User> updateActive(@PathVariable String id, @RequestBody ActiveStatusRequest request) {

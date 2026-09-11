@@ -36,6 +36,21 @@ public class User {
         this.province = province;
         this.postalCode = postalCode;
     }
+    public boolean isBillable() {
+        return hasData(this.getFirstName())
+                && hasData(this.getFamilyName())
+                && hasData(this.getEmail())
+                && hasData(this.getIdentity())
+                && hasData(this.getAddress())
+                && hasData(this.getCity())
+                && hasData(this.getProvince())
+                && hasData(this.getPostalCode());
+    }
+
+    private boolean hasData(String value) {
+        return value != null && !value.trim().isEmpty();
+    }
+
 
     public String getId() {
         return id;
