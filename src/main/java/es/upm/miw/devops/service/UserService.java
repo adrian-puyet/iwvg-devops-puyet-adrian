@@ -18,4 +18,10 @@ public class UserService {
     public User getUserById(String id) {
         return userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
     }
+
+    public User updateActive(String id, boolean active) {
+        User user = getUserById(id);
+        user.setActive(active);
+        return userRepository.save(user);
+    }
 }

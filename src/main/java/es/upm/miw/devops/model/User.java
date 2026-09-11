@@ -16,6 +16,7 @@ public class User {
     private String city;
     private String province;
     private String postalCode;
+    private boolean active = false;
 
     public User(){}
 
@@ -41,6 +42,14 @@ public class User {
     }
     public void setId(String id) {
         this.id = id;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public String getFirstName() {
