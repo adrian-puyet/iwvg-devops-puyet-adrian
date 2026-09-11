@@ -24,4 +24,8 @@ public class UserService {
         user.setActive(active);
         return userRepository.save(user);
     }
+
+    public void deleteUserById(String id){
+        userRepository.deleteById(id);
+    }
 }
