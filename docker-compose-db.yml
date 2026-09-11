@@ -1,34 +1,4 @@
 services:
-
-  mysql:
-    image: mysql:8.4
-    container_name: mysql-server
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: devopsDb
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-    networks:
-      - devopsNet
-
-  postgres:
-    image: postgres:15.10
-    container_name: postgres-server
-    restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: devopsDb
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - devopsNet
-
   mongo:
     image: mongodb/mongodb-community-server:7.0.16-ubuntu2204
     container_name: mongo-server
@@ -46,10 +16,6 @@ services:
       - devopsNet
 
 volumes:
-  mysql_data:
-    name: "mysql-data"
-  postgres_data:
-    name: "postgres-data"
   mongo_data:
     name: "mongo-data"
   mongo_config:
