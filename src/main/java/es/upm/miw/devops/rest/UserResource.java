@@ -25,10 +25,4 @@ public class UserResource {
     public ResponseEntity<User> updateActive(@PathVariable String id, @RequestBody ActiveStatusRequest request) {
         return ResponseEntity.ok(userService.updateActive(id, request.isActive()));
     }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleException(Exception e) {
-        e.printStackTrace();
-        return ResponseEntity.status(500).body(e.getClass().getName() + ": " + e.getMessage());
-    }
 }

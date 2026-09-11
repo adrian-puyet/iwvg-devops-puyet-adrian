@@ -2,6 +2,7 @@ package es.upm.miw.devops.functionaltests;
 
 import es.upm.miw.devops.model.User;
 import es.upm.miw.devops.repository.UserRepository;
+import es.upm.miw.devops.rest.dto.ActiveStatusRequest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,37 @@ class UserResourceFT {
                 .uri("/user/{id}", "000000000000000000000000")
                 .exchange()
                 .expectStatus().isNotFound();
+    }
+
+    @Test
+    void testPutUserActive() {
+        savedUser = userRepository.save(
+                new User("John", "Doe", "john.doe@example.com"));
+        webTestClient.put()
+                .uri("/user/{id}/active", savedUser.getId())
+                .bodyValue(new ActiveStatusRequest(true))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(User.class)
+                .value(user -> assertThat(user)
+                        .isNotNull()
+                        .extracting(User::getId, User::isActive)
+                        .containsExactly(savedUser.getId(), true));
+    }
+    @Test
+    void testPutUserNotActive() {
+        savedUser = userRepository.save(
+                new User("John", "Doe", "john.doe@example.com"));
+        webTestClient.put()
+                .uri("/user/{id}/active", savedUser.getId())
+                .bodyValue(new ActiveStatusRequest(false))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(User.class)
+                .value(user -> assertThat(user)
+                        .isNotNull()
+                        .extracting(User::getId, User::isActive)
+                        .containsExactly(savedUser.getId(), false));
     }
 
     @AfterEach

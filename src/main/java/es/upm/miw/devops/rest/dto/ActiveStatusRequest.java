@@ -7,6 +7,11 @@ public class ActiveStatusRequest {
     public ActiveStatusRequest() {
     }
 
+    public ActiveStatusRequest(boolean active) {
+        this.active = active;
+    }
+
+
     public boolean isActive() {
         return active;
     }
