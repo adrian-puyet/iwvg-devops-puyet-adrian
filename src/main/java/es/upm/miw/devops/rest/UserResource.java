@@ -25,4 +25,10 @@ public class UserResource {
     public ResponseEntity<User> updateActive(@PathVariable String id, @RequestBody ActiveStatusRequest request) {
         return ResponseEntity.ok(userService.updateActive(id, request.isActive()));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable String id){
+        userService.deleteUserById(id);
+        return ResponseEntity.noContent().build();
+    }
 }

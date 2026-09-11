@@ -81,6 +81,21 @@ class UserResourceFT {
                         .containsExactly(savedUser.getId(), false));
     }
 
+    @Test
+    void testDeleteUser(){
+        savedUser = userRepository.save(
+                new User("John", "Doe", "john.doe@example.com"));
+        webTestClient.delete()
+                .uri("/user/{id}", savedUser.getId())
+                .exchange()
+                .expectStatus().isNoContent();
+
+        webTestClient.get()
+                .uri("/user/{id}", savedUser.getId())
+                .exchange()
+                .expectStatus().isNotFound();
+    }
+
     @AfterEach
     void cleanUp() {
         if (savedUser != null) {
