@@ -96,11 +96,122 @@ class UserResourceFT {
                 .expectStatus().isNotFound();
     }
 
+    @Test
+    void testReadBillableUsers() {
+        User billableUser = userRepository.save(
+                new User(
+                        "John",
+                        "Doe",
+                        "john.doe@example.com",
+                        "12345678A",
+                        "Calle Mayor 1",
+                        "Madrid",
+                        "Madrid",
+                        "28001"
+                )
+        );
+        User nonBillableUser = userRepository.save(
+                new User(
+                        "John",
+                        "Doe",
+                        "john.doe@example.com"
+                )
+        );
+
+        savedUser = billableUser;
+
+        webTestClient.get()
+                .uri("/user?billable=true")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(User.class)
+                .value(users -> {
+                    assertThat(users)
+                            .isNotEmpty()
+                            .allMatch(User::isBillable);
+
+                    assertThat(users)
+                            .extracting(User::getId)
+                            .contains(billableUser.getId());
+                });
+    }
+    @Test
+    void testReadNonBillableUsers() {
+        User billableUser = userRepository.save(
+                new User(
+                        "John",
+                        "Doe",
+                        "john.doe@example.com",
+                        "12345678A",
+                        "Calle Mayor 1",
+                        "Madrid",
+                        "Madrid",
+                        "28001"
+                )
+        );
+        User nonBillableUser = userRepository.save(
+                new User(
+                        "John",
+                        "Doe",
+                        "john.doe@example.com"
+                )
+        );
+
+        savedUser = nonBillableUser;
+
+        webTestClient.get()
+                .uri("/user?billable=false")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(User.class)
+                .value(users -> {
+                    assertThat(users)
+                            .isNotEmpty()
+                            .noneMatch(User::isBillable);
+
+                    assertThat(users)
+                            .extracting(User::getId)
+                            .contains(nonBillableUser.getId());
+                });
+    }
+    @Test
+    void testReadUsersWithoutBillableFilter() {
+        User billableUser = userRepository.save(
+                new User(
+                        "John",
+                        "Doe",
+                        "john.doe@example.com",
+                        "12345678A",
+                        "Calle Mayor 1",
+                        "Madrid",
+                        "Madrid",
+                        "28001"
+                )
+        );
+
+        User nonBillableUser = userRepository.save(
+                new User(
+                        "Jane",
+                        "Doe",
+                        "jane.doe@example.com"
+                )
+        );
+
+        savedUser = billableUser;
+
+        webTestClient.get()
+                .uri("/user")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(User.class)
+                .value(users -> assertThat(users)
+                        .extracting(User::getId)
+                        .contains(billableUser.getId(), nonBillableUser.getId()));
+    }
+
+
     @AfterEach
     void cleanUp() {
-        if (savedUser != null) {
-            userRepository.deleteById(savedUser.getId());
-            savedUser = null;
-        }
+        userRepository.deleteAll();
     }
 }
