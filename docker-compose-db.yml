@@ -1,25 +1,22 @@
 services:
-  mongo:
-    image: mongodb/mongodb-community-server:7.0.16-ubuntu2204
-    container_name: mongo-server
+  postgres:
+    image: postgres:15.10
+    container_name: postgres-server
     restart: always
     environment:
-      MONGO_INITDB_ROOT_USERNAME: mongo
-      MONGO_INITDB_ROOT_PASSWORD: mongo
-      MONGO_INITDB_DATABASE: devopsDb
+      POSTGRES_USER: devops
+      POSTGRES_PASSWORD: devops
+      POSTGRES_DB: devopsDb
     ports:
-      - "27017:27017"
+      - "5432:5432"
     volumes:
-      - mongo_data:/data/db
-      - mongo_config:/data/configdb
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - devopsNet
-
 volumes:
-  mongo_data:
-    name: "mongo-data"
-  mongo_config:
-    name: "mongo-config"
+
+  postgres_data:
+    name: "postgres-data"
 
 networks:
   devopsNet:
