@@ -20,11 +20,11 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public User getUserById(String id) {
+    public User getUserById(Long id) {
         return userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
     }
 
-    public User updateUser(String id, UserUpdateRequest request) {
+    public User updateUser(Long id, UserUpdateRequest request) {
         User user = getUserById(id);
 
         user.setFirstName(request.getFirstName());
@@ -39,13 +39,13 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User updateActive(String id, boolean active) {
+    public User updateActive(Long id, boolean active) {
         User user = getUserById(id);
         user.setActive(active);
         return userRepository.save(user);
     }
 
-    public void deleteUserById(String id){
+    public void deleteUserById(Long id){
         userRepository.deleteById(id);
     }
 

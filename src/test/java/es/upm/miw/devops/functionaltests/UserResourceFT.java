@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
@@ -20,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient
 @ActiveProfiles("test")
+@Import(TestcontainersConfiguration.class)
 class UserResourceFT {
 
     @Autowired
@@ -366,7 +368,7 @@ class UserResourceFT {
 
         List<UserActiveStatusItem> request = List.of(
                 new UserActiveStatusItem(savedUser.getId(), true),
-                new UserActiveStatusItem("000000000000000000000000", true)
+                new UserActiveStatusItem(9999999999L, true)
         );
 
         webTestClient.patch()
@@ -383,7 +385,7 @@ class UserResourceFT {
 
         List<UserActiveStatusItem> request = List.of(
                 new UserActiveStatusItem(user1.getId(), !originalActive),
-                new UserActiveStatusItem("000000000000000000000000", true)
+                new UserActiveStatusItem(999999999999L, true)
         );
 
         webTestClient.patch()
