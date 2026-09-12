@@ -10,7 +10,8 @@
 ![GitHub closed issues](https://img.shields.io/github/issues-closed/adrian-puyet/iwvg-devops-puyet-adrian?color=informational)
 
 ### Estado del código
-
+[![DevOps](https://github.com/adrian-puyet/iwvg-devops-puyet-adrian/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/adrian-puyet/iwvg-devops-puyet-adrian/actions/workflows/continuous-integration.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=adrian-puyet_iwvg-devops-puyet-adrian&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=adrian-puyet_iwvg-devops-puyet-adrian)
 [![Render broken](https://iwvg-devops-latest.onrender.com/version-badge)](https://iwvg-devops-latest.onrender.com/swagger-ui.html)
 
 
