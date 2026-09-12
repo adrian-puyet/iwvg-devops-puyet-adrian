@@ -1,5 +1,6 @@
 package es.upm.miw.devops.rest.dto;
 
+
 import jakarta.validation.constraints.NotBlank;
 
 public class UserUpdateRequest {

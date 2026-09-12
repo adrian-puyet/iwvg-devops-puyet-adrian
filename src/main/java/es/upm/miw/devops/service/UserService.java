@@ -25,7 +25,6 @@ public class UserService {
     public User updateUser(String id, UserUpdateRequest request) {
         User user = getUserById(id);
 
-        System.out.println(request.getAddress());
         user.setFirstName(request.getFirstName());
         user.setFamilyName(request.getFamilyName());
         user.setEmail(request.getEmail());
