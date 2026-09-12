@@ -2,6 +2,7 @@ package es.upm.miw.devops.rest;
 
 import es.upm.miw.devops.model.User;
 import es.upm.miw.devops.rest.dto.ActiveStatusRequest;
+import es.upm.miw.devops.rest.dto.UserActiveStatusItem;
 import es.upm.miw.devops.rest.dto.UserUpdateRequest;
 import es.upm.miw.devops.service.UserService;
 import jakarta.validation.Valid;
@@ -45,5 +46,10 @@ public class UserResource {
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable String id, @Valid @RequestBody UserUpdateRequest request) {
         return ResponseEntity.ok(userService.updateUser(id, request));
+    }
+
+    @PatchMapping
+    public ResponseEntity<List<User>> batchUpdateActive(@RequestBody @Valid List<@Valid UserActiveStatusItem> items) {
+        return ResponseEntity.ok(userService.batchUpdateActive(items));
     }
 }
