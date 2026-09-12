@@ -6,12 +6,14 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - SPRING_DATA_MONGODB_URI:=mongodb://mongo:mongo@mongo-server:27017/devopsDb?authSource=admin
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-server:5432/devopsDb
+      - SPRING_DATASOURCE_USERNAME=devops
+      - SPRING_DATASOURCE_PASSWORD=devops
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
     networks:
       - devopsNet
 
 networks:
   devopsNet:
     external: true
-
 #> docker compose up --build -d

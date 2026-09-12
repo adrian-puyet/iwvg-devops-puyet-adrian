@@ -3,19 +3,25 @@ package es.upm.miw.devops.functionaltests;
 import es.upm.miw.devops.model.User;
 import es.upm.miw.devops.repository.UserRepository;
 import es.upm.miw.devops.rest.dto.ActiveStatusRequest;
+import es.upm.miw.devops.rest.dto.UserActiveStatusItem;
+import es.upm.miw.devops.rest.dto.UserUpdateRequest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient
 @ActiveProfiles("test")
+@Import(TestcontainersConfiguration.class)
 class UserResourceFT {
 
     @Autowired
@@ -207,6 +213,189 @@ class UserResourceFT {
                 .value(users -> assertThat(users)
                         .extracting(User::getId)
                         .contains(billableUser.getId(), nonBillableUser.getId()));
+    }
+
+    @Test
+    void testUpdateUser() {
+        savedUser = userRepository.save(
+                new User("John", "Doe", "john.doe@example.com"));
+
+        UserUpdateRequest request = new UserUpdateRequest();
+        request.setFirstName("Jane");
+        request.setFamilyName("Smith");
+        request.setEmail("jane.smith@example.com");
+        request.setIdentity("12345678A");
+        request.setAddress("Calle Mayor 1");
+        request.setCity("Madrid");
+        request.setProvince("Madrid");
+        request.setPostalCode("28001");
+
+        webTestClient.put()
+                .uri("/user/{id}", savedUser.getId())
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(User.class)
+                .value(user -> assertThat(user)
+                        .isNotNull()
+                        .extracting(
+                                User::getId,
+                                User::getFirstName,
+                                User::getFamilyName,
+                                User::getEmail,
+                                User::getIdentity,
+                                User::getAddress,
+                                User::getCity,
+                                User::getProvince,
+                                User::getPostalCode)
+                        .containsExactly(
+                                savedUser.getId(),
+                                "Jane",
+                                "Smith",
+                                "jane.smith@example.com",
+                                "12345678A",
+                                "Calle Mayor 1",
+                                "Madrid",
+                                "Madrid",
+                                "28001"));
+    }
+
+    @Test
+    void testUpdateUserWithOnlyRequiredFields() {
+        savedUser = userRepository.save(
+                new User(
+                        "John",
+                        "Doe",
+                        "john.doe@example.com",
+                        "12345678A",
+                        "Calle Mayor 1",
+                        "Madrid",
+                        "Madrid",
+                        "28001"
+                ));
+
+        UserUpdateRequest request = new UserUpdateRequest();
+        request.setFirstName("Jane");
+        request.setFamilyName("Smith");
+        request.setEmail("jane.smith@example.com");
+
+        webTestClient.put()
+                .uri("/user/{id}", savedUser.getId())
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(User.class)
+                .value(user -> assertThat(user)
+                        .isNotNull()
+                        .extracting(
+                                User::getId,
+                                User::getFirstName,
+                                User::getFamilyName,
+                                User::getEmail,
+                                User::getIdentity,
+                                User::getAddress,
+                                User::getCity,
+                                User::getProvince,
+                                User::getPostalCode)
+                        .containsExactly(
+                                savedUser.getId(),
+                                "Jane",
+                                "Smith",
+                                "jane.smith@example.com",
+                                null, null, null, null, null));
+    }
+
+    @Test
+    void testUpdateUserNotFound() {
+        UserUpdateRequest request = new UserUpdateRequest();
+        request.setFirstName("Jane");
+        request.setFamilyName("Smith");
+        request.setEmail("jane.smith@example.com");
+
+        webTestClient.put()
+                .uri("/user/{id}", "000000000000000000000000")
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isNotFound();
+    }
+
+    @Test
+    void testUpdateUserMissingRequiredFields() {
+        savedUser = userRepository.save(
+                new User("John", "Doe", "john.doe@example.com"));
+
+        UserUpdateRequest request = new UserUpdateRequest();
+        request.setFamilyName("Smith");
+        request.setEmail("jane.smith@example.com");
+        // firstName intentionally left blank
+
+        webTestClient.put()
+                .uri("/user/{id}", savedUser.getId())
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isBadRequest();
+    }
+
+    @Test
+    void testBatchUpdateActive() {
+        User user1 = userRepository.save(new User("John", "Doe", "john.doe@example.com"));
+        User user2 = userRepository.save(new User("Jane", "Roe", "jane.roe@example.com"));
+        savedUser = user1;
+
+        List<UserActiveStatusItem> request = List.of(
+                new UserActiveStatusItem(user1.getId(), true),
+                new UserActiveStatusItem(user2.getId(), false)
+        );
+
+        webTestClient.patch()
+                .uri("/user")
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(User.class)
+                .value(users -> assertThat(users)
+                        .extracting(User::getId, User::isActive)
+                        .containsExactlyInAnyOrder(
+                                org.assertj.core.groups.Tuple.tuple(user1.getId(), true),
+                                org.assertj.core.groups.Tuple.tuple(user2.getId(), false)));
+
+        userRepository.deleteById(user2.getId());
+    }
+
+    @Test
+    void testBatchUpdateActiveUserNotFound() {
+        savedUser = userRepository.save(new User("John", "Doe", "john.doe@example.com"));
+
+        List<UserActiveStatusItem> request = List.of(
+                new UserActiveStatusItem(savedUser.getId(), true),
+                new UserActiveStatusItem(9999999999L, true)
+        );
+
+        webTestClient.patch()
+                .uri("/user")
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isNotFound();
+    }
+    @Test
+    void testBatchUpdateActiveIsAtomicOnNotFound() {
+        User user1 = userRepository.save(new User("John", "Doe", "john.doe@example.com"));
+        savedUser = user1;
+        boolean originalActive = user1.isActive();
+
+        List<UserActiveStatusItem> request = List.of(
+                new UserActiveStatusItem(user1.getId(), !originalActive),
+                new UserActiveStatusItem(999999999999L, true)
+        );
+
+        webTestClient.patch()
+                .uri("/user")
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isNotFound();
+
+        User reloaded = userRepository.findById(user1.getId()).orElseThrow();
+        assertThat(reloaded.isActive()).isEqualTo(originalActive);
     }
 
 

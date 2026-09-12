@@ -1,6 +1,7 @@
 package es.upm.miw.devops.rest.exceptionshandler;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -15,13 +16,19 @@ public class ApiExceptionHandler {
     @ExceptionHandler({
             NoResourceFoundException.class,
             ResponseStatusException.class
-
     })
     @ResponseBody
     public ErrorMessage noResourceFoundRequest(Exception exception) {
         return new ErrorMessage(new RuntimeException(
                 "Ruta no encontrada. Prueba con: **/actuator/info o **/swagger-ui.html o **/v3/api-docs o **/v3/api-docs.yaml"),
                 HttpStatus.NOT_FOUND.value());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseBody
+    public ErrorMessage validationError(MethodArgumentNotValidException exception) {
+        return new ErrorMessage(new RuntimeException("Validation failed"), HttpStatus.BAD_REQUEST.value());
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
