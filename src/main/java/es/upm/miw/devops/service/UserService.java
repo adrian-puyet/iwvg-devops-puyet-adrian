@@ -2,7 +2,9 @@ package es.upm.miw.devops.service;
 
 import es.upm.miw.devops.model.User;
 import es.upm.miw.devops.repository.UserRepository;
+import es.upm.miw.devops.rest.dto.UserActiveStatusItem;
 import es.upm.miw.devops.rest.dto.UserUpdateRequest;
+import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -58,4 +60,19 @@ public class UserService {
                 .filter(user -> user.isBillable() == billable)
                 .toList();
     }
+
+    public List<User> batchUpdateActive(List<UserActiveStatusItem> items) {
+        List<User> users = items.stream()
+                .map(item -> getUserById(item.getId()))
+                .toList();
+
+        for (int i = 0; i < users.size(); i++) {
+            users.get(i).setActive(items.get(i).getActive());
+        }
+
+        return users.stream()
+                .map(userRepository::save)
+                .toList();
+    }
+
 }
