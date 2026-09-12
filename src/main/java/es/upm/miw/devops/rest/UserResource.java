@@ -2,7 +2,9 @@ package es.upm.miw.devops.rest;
 
 import es.upm.miw.devops.model.User;
 import es.upm.miw.devops.rest.dto.ActiveStatusRequest;
+import es.upm.miw.devops.rest.dto.UserUpdateRequest;
 import es.upm.miw.devops.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -38,5 +40,10 @@ public class UserResource {
     public ResponseEntity<Void> deleteUser(@PathVariable String id){
         userService.deleteUserById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable String id, @Valid @RequestBody UserUpdateRequest request) {
+        return ResponseEntity.ok(userService.updateUser(id, request));
     }
 }
