@@ -2,6 +2,7 @@ package es.upm.miw.devops.service;
 
 import es.upm.miw.devops.model.User;
 import es.upm.miw.devops.repository.UserRepository;
+import es.upm.miw.devops.rest.dto.UserUpdateRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -19,6 +20,22 @@ public class UserService {
 
     public User getUserById(String id) {
         return userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+    }
+
+    public User updateUser(String id, UserUpdateRequest request) {
+        User user = getUserById(id);
+
+        System.out.println(request.getAddress());
+        user.setFirstName(request.getFirstName());
+        user.setFamilyName(request.getFamilyName());
+        user.setEmail(request.getEmail());
+        user.setIdentity(request.getIdentity());
+        user.setAddress(request.getAddress());
+        user.setCity(request.getCity());
+        user.setProvince(request.getProvince());
+        user.setPostalCode(request.getPostalCode());
+
+        return userRepository.save(user);
     }
 
     public User updateActive(String id, boolean active) {
