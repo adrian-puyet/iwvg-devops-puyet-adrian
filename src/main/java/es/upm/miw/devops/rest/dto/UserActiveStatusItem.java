@@ -5,23 +5,23 @@ import jakarta.validation.constraints.NotNull;
 public class UserActiveStatusItem {
 
     @NotNull
-    private String id;
+    private Long id;
 
     @NotNull
     private Boolean active;
 
     public UserActiveStatusItem() {}
 
-    public UserActiveStatusItem(String id, Boolean active) {
+    public UserActiveStatusItem(Long id, Boolean active) {
         this.id = id;
         this.active = active;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

@@ -12,21 +12,6 @@ jobs:
       actions: read
       security-events: write
 
-    services:
-      mongo:
-        image: mongodb/mongodb-community-server:7.0.16-ubuntu2204
-        ports:
-          - 27017:27017
-        env:
-          MONGO_INITDB_ROOT_USERNAME: mongo
-          MONGO_INITDB_ROOT_PASSWORD: mongo
-          MONGO_INITDB_DATABASE: devopsDb
-        options: >-
-          --health-cmd "mongosh --eval 'db.runCommand({ ping: 1 })' -u mongo -p mongo --authenticationDatabase admin"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 10
-
     steps:
       - name: ⬇️ Checkout repository
         uses: actions/checkout@v4
@@ -51,8 +36,6 @@ jobs:
 
       - name: ✅ Run Unit & Integration Test & Functional Test
         run: mvn -B verify
-        env:
-          SPRING_DATA_MONGODB_URI: mongodb://mongo:mongo@localhost:27017/devopsDb?authSource=admin
 
       # -------------------------------------------------------------
       # PASO: Notificación de Éxito en Slack
