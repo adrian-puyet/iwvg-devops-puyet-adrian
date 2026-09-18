@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: ivwg-devops-puyet-adrian
   profiles:
     active: dev
   output:

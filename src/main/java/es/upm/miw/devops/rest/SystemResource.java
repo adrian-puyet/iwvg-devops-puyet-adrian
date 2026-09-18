@@ -56,9 +56,12 @@ public class SystemResource {
         return appInfo;
     }
 
+    @Value("${app.badge.label:Render}")
+    private String badgeLabel;
+
     @GetMapping(value = VERSION_BADGE, produces = {"image/svg+xml"})
     public byte[] generateBadge() {
-        return this.generateBadge("Render", "v" + version).getBytes();
+        return this.generateBadge(badgeLabel, "v" + version).getBytes();
     }
 
 }
