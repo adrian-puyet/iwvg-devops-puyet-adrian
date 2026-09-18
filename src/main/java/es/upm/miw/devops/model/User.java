@@ -19,6 +19,7 @@ public class User {
     private String province;
     private String postalCode;
     private boolean active = false;
+    private boolean admin = false;
 
     public User(){}
 
@@ -91,6 +92,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
     }
 
     public String getIdentity() {
