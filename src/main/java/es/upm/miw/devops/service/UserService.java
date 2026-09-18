@@ -4,7 +4,6 @@ import es.upm.miw.devops.model.User;
 import es.upm.miw.devops.repository.UserRepository;
 import es.upm.miw.devops.rest.dto.UserActiveStatusItem;
 import es.upm.miw.devops.rest.dto.UserUpdateRequest;
-import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -41,6 +40,12 @@ public class UserService {
 
     public User updateActive(Long id, boolean active) {
         User user = getUserById(id);
+
+        // Validación: Si se intenta desactivar (!active) y el usuario es admin
+        if (!active && user.isAdmin()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Los usuarios administradores no pueden ser desactivados");
+        }
+
         user.setActive(active);
         return userRepository.save(user);
     }
@@ -63,7 +68,14 @@ public class UserService {
 
     public List<User> batchUpdateActive(List<UserActiveStatusItem> items) {
         List<User> users = items.stream()
-                .map(item -> getUserById(item.getId()))
+                .map(item -> {
+                    User user = getUserById(item.getId());
+                    // Validación para la actualización por lotes
+                    if (!item.getActive() && user.isAdmin()) {
+                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Los usuarios administradores no pueden ser desactivados");
+                    }
+                    return user;
+                })
                 .toList();
 
         for (int i = 0; i < users.size(); i++) {
@@ -74,5 +86,4 @@ public class UserService {
                 .map(userRepository::save)
                 .toList();
     }
-
 }
