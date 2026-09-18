@@ -12,8 +12,8 @@
 ### Estado del código
 [![DevOps](https://github.com/adrian-puyet/iwvg-devops-puyet-adrian/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/adrian-puyet/iwvg-devops-puyet-adrian/actions/workflows/continuous-integration.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=adrian-puyet_iwvg-devops-puyet-adrian&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=adrian-puyet_iwvg-devops-puyet-adrian)
-[![Render](https://iwvg-devops-puyet-adrian-latest.onrender.com/version-badge)]([https://iwvg-devops-latest.onrender.com/swagger-ui.html](https://iwvg-devops-puyet-adrian-latest.onrender.com/version-badge))
-
+[![Render](https://iwvg-devops-puyet-adrian-latest.onrender.com/version-badge)](https://iwvg-devops-puyet-adrian-latest.onrender.com/version-badge)
+[![AWS Lightsail](http://15.236.24.218/version-badge)](http://15.236.24.218/version-badge)
 
 ### Tecnologías necesarias
 `Java` `Maven` `GitHub` `GitHub Actions` `Sonarcloud` `Slack` `Spring-Boot` `GitHub Packages` `Docker` `OpenAPI`
