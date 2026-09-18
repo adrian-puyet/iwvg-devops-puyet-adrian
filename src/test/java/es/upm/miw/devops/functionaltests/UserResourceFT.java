@@ -398,6 +398,37 @@ class UserResourceFT {
         assertThat(reloaded.isActive()).isEqualTo(originalActive);
     }
 
+    @Test
+    void testPutUserActiveAdminCannotBeDeactivated() {
+        User adminUser = new User("Admin", "User", "admin@example.com");
+        adminUser.setAdmin(true);
+        adminUser.setActive(true);
+        savedUser = userRepository.save(adminUser);
+
+        webTestClient.put()
+                .uri("/user/{id}/active", savedUser.getId())
+                .bodyValue(new ActiveStatusRequest(false))
+                .exchange()
+                .expectStatus().isBadRequest();
+    }
+
+    @Test
+    void testBatchUpdateActiveAdminCannotBeDeactivated() {
+        User adminUser = new User("Admin", "User", "admin@example.com");
+        adminUser.setAdmin(true);
+        adminUser.setActive(true);
+        savedUser = userRepository.save(adminUser);
+
+        List<UserActiveStatusItem> request = List.of(
+                new UserActiveStatusItem(savedUser.getId(), false)
+        );
+
+        webTestClient.patch()
+                .uri("/user")
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isBadRequest();
+    }
 
     @AfterEach
     void cleanUp() {
