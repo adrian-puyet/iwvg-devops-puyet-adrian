@@ -1,2 +1,16 @@
 server:
   port: 8080
+
+app:
+  badge:
+    label: "localhost"
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/devopsDb
+    username: devops
+    password: devops
+  jpa:
+    hibernate:
+      ddl-auto: update
